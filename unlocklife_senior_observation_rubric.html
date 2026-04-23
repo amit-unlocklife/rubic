@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Senior Observation Rubric — UnlockLife</title>
+  <style>
+    /* ── Design tokens ─────────────────────────────────────────── */
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+      --color-text-primary:       #111827;
+      --color-text-secondary:     #6B7280;
+      --color-text-success:       #065F46;
+      --color-background-primary:   #FFFFFF;
+      --color-background-secondary: #F9FAFB;
+      --color-background-success:   #D1FAE5;
+      --color-border-secondary:   #D1D5DB;
+      --color-border-tertiary:    #E5E7EB;
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-text-primary:       #F9FAFB;
+        --color-text-secondary:     #9CA3AF;
+        --color-text-success:       #6EE7B7;
+        --color-background-primary:   #111827;
+        --color-background-secondary: #1F2937;
+        --color-background-success:   #064E3B;
+        --color-border-secondary:   #374151;
+        --color-border-tertiary:    #374151;
+      }
+    }
+
+    /* ── Reset & base ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--color-background-secondary);
+      color: var(--color-text-primary);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Page shell ─────────────────────────────────────────────── */
+    .page-header {
+      background: var(--color-background-primary);
+      border-bottom: 0.5px solid var(--color-border-tertiary);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .page-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #1D9E75, #0F6E56);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .page-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      line-height: 1.2;
+    }
+    .page-subtitle {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-top: 1px;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    /* ── Section label ──────────────────────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--color-text-secondary);
+      margin: 0 0 8px;
+    }
+
+    /* ── Card ───────────────────────────────────────────────────── */
+    .card {
+      background: var(--color-background-primary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      padding: 18px 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* ── Header fields ──────────────────────────────────────────── */
+    .header-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 420px) {
+      .header-row { grid-template-columns: 1fr; }
+    }
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
+    .field-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+    .field-group input,
+    .field-group select {
+      font-size: 14px;
+      font-family: var(--font-sans);
+      padding: 8px 11px;
+      border-radius: var(--border-radius-md);
+      border: 0.5px solid var(--color-border-secondary);
+      background: var(--color-background-primary);
+      color: var(--color-text-primary);
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field-group input:focus,
+    .field-group select:focus {
+      border-color: #1D9E75;
+      box-shadow: 0 0 0 3px rgba(29,158,117,0.12);
+    }
+
+    /* ── Stage buttons ──────────────────────────────────────────── */
+    .stage-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 380px) {
+      .stage-row { grid-template-columns: 1fr; }
+    }
+    .stage-btn {
+      border: 0.5px solid var(--color-border-secondary);
+      border-radius: var(--border-radius-md);
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .stage-btn:hover { background: var(--color-background-secondary); }
+    .stage-btn.active-ignite   { background: #FAEEDA; border-color: #BA7517; }
+    .stage-btn.active-deepen   { background: #EEEDFE; border-color: #7F77DD; }
+    .stage-btn.active-strengthen { background: #E1F5EE; border-color: #1D9E75; }
+    .stage-name { font-size: 13px; font-weight: 600; }
+    .stage-desc { font-size: 11px; color: var(--color-text-secondary); margin-top: 3px; }
+    .stage-btn.active-ignite .stage-name    { color: #633806; }
+    .stage-btn.active-ignite .stage-desc    { color: #854F0B; }
+    .stage-btn.active-deepen .stage-name    { color: #3C3489; }
+    .stage-btn.active-deepen .stage-desc    { color: #534AB7; }
+    .stage-btn.active-strengthen .stage-name { color: #085041; }
+    .stage-btn.active-strengthen .stage-desc { color: #0F6E56; }
+
+    @media (prefers-color-scheme: dark) {
+      .stage-btn.active-ignite    { background: #412402; border-color: #BA7517; }
+      .stage-btn.active-ignite .stage-name { color: #FAC775; }
+      .stage-btn.active-ignite .stage-desc { color: #EF9F27; }
+      .stage-btn.active-deepen    { background: #26215C; border-color: #7F77DD; }
+      .stage-btn.active-deepen .stage-name { color: #CECBF6; }
+      .stage-btn.active-deepen .stage-desc { color: #AFA9EC; }
+      .stage-btn.active-strengthen { background: #04342C; border-color: #1D9E75; }
+      .stage-btn.active-strengthen .stage-name { color: #9FE1CB; }
+      .stage-btn.active-strengthen .stage-desc { color: #5DCAA5; }
+    }
+
+    /* ── Score legend ───────────────────────────────────────────── */
+    .score-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+    .legend-item  { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); }
+    .legend-dot   { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .ld1 { background: #E24B4A; }
+    .ld2 { background: #BA7517; }
+    .ld3 { background: #1D9E75; }
+
+    /* ── Sphere cards ───────────────────────────────────────────── */
+    .sphere {
+      background: var(--color-background-primary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .sphere-header {
+      padding: 11px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sphere-title { font-size: 13px; font-weight: 600; }
+    .sphere-score { font-size: 13px; font-weight: 600; }
+
+    .sh-physical { background: #E1F5EE; }
+    .sh-physical .sphere-title,
+    .sh-physical .sphere-score { color: #085041; }
+    .sh-social { background: #E6F1FB; }
+    .sh-social .sphere-title,
+    .sh-social .sphere-score { color: #0C447C; }
+    .sh-cognitive { background: #FAEEDA; }
+    .sh-cognitive .sphere-title,
+    .sh-cognitive .sphere-score { color: #633806; }
+    .sh-emotional { background: #FBEAF0; }
+    .sh-emotional .sphere-title,
+    .sh-emotional .sphere-score { color: #72243E; }
+
+    @media (prefers-color-scheme: dark) {
+      .sh-physical  { background: #04342C; }
+      .sh-physical .sphere-title, .sh-physical .sphere-score { color: #9FE1CB; }
+      .sh-social    { background: #042C53; }
+      .sh-social .sphere-title, .sh-social .sphere-score { color: #B5D4F4; }
+      .sh-cognitive { background: #412402; }
+      .sh-cognitive .sphere-title, .sh-cognitive .sphere-score { color: #FAC775; }
+      .sh-emotional { background: #4B1528; }
+      .sh-emotional .sphere-title, .sh-emotional .sphere-score { color: #F4C0D1; }
+    }
+
+    /* ── Indicator rows ─────────────────────────────────────────── */
+    .indicator-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 16px;
+      border-top: 0.5px solid var(--color-border-tertiary);
+    }
+    .indicator-text {
+      flex: 1;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-text-primary);
+    }
+    .indicator-sub {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      margin-top: 3px;
+    }
+    .score-dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 0.5px solid var(--color-border-secondary);
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .dot:hover { background: var(--color-background-secondary); }
+    .dot.sel-1 { background: #FCEBEB; border-color: #E24B4A; color: #791F1F; }
+    .dot.sel-2 { background: #FAEEDA; border-color: #BA7517; color: #633806; }
+    .dot.sel-3 { background: #E1F5EE; border-color: #1D9E75; color: #085041; }
+
+    /* ── Notes ──────────────────────────────────────────────────── */
+    .notes-row {
+      padding: 10px 16px 14px;
+      border-top: 0.5px solid var(--color-border-tertiary);
+      background: var(--color-background-secondary);
+    }
+    .notes-row textarea {
+      width: 100%;
+      font-size: 13px;
+      font-family: var(--font-sans);
+      padding: 8px 11px;
+      border-radius: var(--border-radius-md);
+      border: 0.5px solid var(--color-border-secondary);
+      background: var(--color-background-primary);
+      color: var(--color-text-primary);
+      resize: none;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .notes-row textarea:focus {
+      border-color: #1D9E75;
+      box-shadow: 0 0 0 3px rgba(29,158,117,0.12);
+    }
+
+    /* ── Score summary totals ───────────────────────────────────── */
+    .totals-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 360px) {
+      .totals-grid { grid-template-columns: 1fr; }
+    }
+    .total-card {
+      background: var(--color-background-primary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .total-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 5px; }
+    .total-value { font-size: 24px; font-weight: 600; color: var(--color-text-primary); line-height: 1; }
+    .total-sub   { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; }
+
+    /* ── Stage badge ────────────────────────────────────────────── */
+    .stage-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+    .badge-ignite    { background: #FAEEDA; color: #633806; }
+    .badge-deepen    { background: #EEEDFE; color: #3C3489; }
+    .badge-strengthen { background: #E1F5EE; color: #085041; }
+    @media (prefers-color-scheme: dark) {
+      .badge-ignite    { background: #412402; color: #FAC775; }
+      .badge-deepen    { background: #26215C; color: #CECBF6; }
+      .badge-strengthen { background: #04342C; color: #9FE1CB; }
+    }
+
+    /* ── Challenge blocks ───────────────────────────────────────── */
+    .challenge-block {
+      background: var(--color-background-primary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .challenge-header {
+      padding: 11px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ch-physical .challenge-header  { background: #E1F5EE; color: #085041; }
+    .ch-social .challenge-header    { background: #E6F1FB; color: #0C447C; }
+    .ch-cognitive .challenge-header { background: #FAEEDA; color: #633806; }
+    .ch-emotional .challenge-header { background: #FBEAF0; color: #72243E; }
+    @media (prefers-color-scheme: dark) {
+      .ch-physical .challenge-header  { background: #04342C; color: #9FE1CB; }
+      .ch-social .challenge-header    { background: #042C53; color: #B5D4F4; }
+      .ch-cognitive .challenge-header { background: #412402; color: #FAC775; }
+      .ch-emotional .challenge-header { background: #4B1528; color: #F4C0D1; }
+    }
+    .challenge-body { padding: 14px 16px; }
+    .challenge-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--color-text-primary); }
+    .challenge-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 12px; }
+    .challenge-toggle { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+
+    /* ── Toggle switch ──────────────────────────────────────────── */
+    .toggle-track {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--color-border-secondary);
+      border-radius: 10px;
+      transition: background 0.2s;
+      display: inline-block;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .toggle-track.on { background: #1D9E75; }
+    .toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      pointer-events: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle-track.on .toggle-thumb { transform: translateX(16px); }
+
+    /* ── Bonus badge ────────────────────────────────────────────── */
+    .bonus-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--color-background-success);
+      color: var(--color-text-success);
+    }
+
+    /* ── Submit row ─────────────────────────────────────────────── */
+    .submit-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-primary {
+      font-size: 13px;
+      font-family: var(--font-sans);
+      padding: 9px 20px;
+      border-radius: 20px;
+      border: none;
+      background: #1D9E75;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #178760; }
+    .btn-reset {
+      font-size: 12px;
+      font-family: var(--font-sans);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 0.5px solid var(--color-border-secondary);
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-reset:hover { background: var(--color-background-secondary); }
+    .saved-msg {
+      font-size: 13px;
+      color: var(--color-text-success);
+      display: none;
+      font-weight: 500;
+    }
+
+    /* ── Divider ────────────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 0.5px solid var(--color-border-tertiary);
+      margin: 24px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-logo">UL</div>
+  <div>
+    <div class="page-title">Senior Observation Rubric</div>
+    <div class="page-subtitle">UnlockLife · Weekly coaching assessment</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="section-label">Senior details</div>
+  <div class="card">
+    <div class="header-row">
+      <div class="field-group">
+        <span class="field-label">Senior name</span>
+        <input type="text" id="senior-name" placeholder="e.g. Suresh Mehta">
+      </div>
+      <div class="field-group">
+        <span class="field-label">Date of observation</span>
+        <input type="date" id="obs-date">
+      </div>
+      <div class="field-group">
+        <span class="field-label">Observed by</span>
+        <input type="text" id="observer" placeholder="Coach name">
+      </div>
+      <div class="field-group">
+        <span class="field-label">Week number</span>
+        <input type="text" id="week-no" placeholder="e.g. Week 4, April">
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-bottom:10px;">Current stage</div>
+    <div class="stage-row">
+      <button class="stage-btn" id="stage-ignite" onclick="setStage('ignite')">
+        <div class="stage-name">Ignite</div>
+        <div class="stage-desc">New or settling in</div>
+      </button>
+      <button class="stage-btn" id="stage-deepen" onclick="setStage('deepen')">
+        <div class="stage-name">Deepen</div>
+        <div class="stage-desc">Engaging regularly</div>
+      </button>
+      <button class="stage-btn" id="stage-strengthen" onclick="setStage('strengthen')">
+        <div class="stage-name">Strengthen</div>
+        <div class="stage-desc">Consistent and growing</div>
+      </button>
+    </div>
+
+    <div class="section-label" style="margin-bottom:8px;">Scoring guide</div>
+    <div class="score-legend">
+      <div class="legend-item"><div class="legend-dot ld1"></div> 1 — Rarely observed</div>
+      <div class="legend-item"><div class="legend-dot ld2"></div> 2 — Sometimes observed</div>
+      <div class="legend-item"><div class="legend-dot ld3"></div> 3 — Consistently observed</div>
+    </div>
+  </div>
+
+  <div class="section-label">Health spheres — weekly observation</div>
+
+  <div class="sphere" id="sphere-physical">
+    <div class="sphere-header sh-physical">
+      <span class="sphere-title">Physical sphere</span>
+      <span class="sphere-score" id="score-physical">0 / 15</span>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Participated actively in movement or fitness session
+        <div class="indicator-sub">Did not just watch — made an attempt at exercises</div>
+      </div>
+      <div class="score-dots" data-sphere="physical" data-idx="0">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Completed warm-up and cool-down without being prompted
+        <div class="indicator-sub">Followed along without needing repeated reminders</div>
+      </div>
+      <div class="score-dots" data-sphere="physical" data-idx="1">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Showed visible effort or improvement in a movement
+        <div class="indicator-sub">Tried harder, went deeper, or held longer than before</div>
+      </div>
+      <div class="score-dots" data-sphere="physical" data-idx="2">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Reported or showed reduced physical complaint compared to last week
+        <div class="indicator-sub">Pain, stiffness, or fatigue mentioned less or not at all</div>
+      </div>
+      <div class="score-dots" data-sphere="physical" data-idx="3">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Maintained regularity — attended without being chased
+        <div class="indicator-sub">Showed up on their own initiative</div>
+      </div>
+      <div class="score-dots" data-sphere="physical" data-idx="4">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="notes-row">
+      <div class="field-label" style="margin-bottom:5px;">Observation notes (physical)</div>
+      <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
+    </div>
+  </div>
+
+  <div class="sphere" id="sphere-social">
+    <div class="sphere-header sh-social">
+      <span class="sphere-title">Social sphere</span>
+      <span class="sphere-score" id="score-social">0 / 15</span>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Initiated a conversation or greeted another member
+        <div class="indicator-sub">Didn't wait to be spoken to — started something themselves</div>
+      </div>
+      <div class="score-dots" data-sphere="social" data-idx="0">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Responded when spoken to — did not stay withdrawn
+        <div class="indicator-sub">Eye contact, reply, or acknowledgement given</div>
+      </div>
+      <div class="score-dots" data-sphere="social" data-idx="1">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Shared something personal — a story, memory, or opinion
+        <div class="indicator-sub">Opened up voluntarily, not just answering yes/no</div>
+      </div>
+      <div class="score-dots" data-sphere="social" data-idx="2">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Showed interest in another member's wellbeing
+        <div class="indicator-sub">Asked how someone was, noticed their absence, or offered encouragement</div>
+      </div>
+      <div class="score-dots" data-sphere="social" data-idx="3">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Participated in group activity without needing separate coaxing
+        <div class="indicator-sub">Joined in willingly, not after repeated individual invitations</div>
+      </div>
+      <div class="score-dots" data-sphere="social" data-idx="4">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="notes-row">
+      <div class="field-label" style="margin-bottom:5px;">Observation notes (social)</div>
+      <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
+    </div>
+  </div>
+
+  <div class="sphere" id="sphere-cognitive">
+    <div class="sphere-header sh-cognitive">
+      <span class="sphere-title">Cognitive sphere</span>
+      <span class="sphere-score" id="score-cognitive">0 / 15</span>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Recalled something from a previous session unprompted
+        <div class="indicator-sub">Remembered a song, step, craft detail, or discussion without being reminded</div>
+      </div>
+      <div class="score-dots" data-sphere="cognitive" data-idx="0">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Followed multi-step instructions without getting lost
+        <div class="indicator-sub">Kept up with sequenced directions in fitness, music, or craft</div>
+      </div>
+      <div class="score-dots" data-sphere="cognitive" data-idx="1">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Asked a curious or thoughtful question during the session
+        <div class="indicator-sub">Mind was engaged, not just present</div>
+      </div>
+      <div class="score-dots" data-sphere="cognitive" data-idx="2">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Responded correctly or thoughtfully to trivia or a quiz question
+        <div class="indicator-sub">Attempted an answer — right or wrong, the attempt counts</div>
+      </div>
+      <div class="score-dots" data-sphere="cognitive" data-idx="3">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Showed creative thinking or a personalised touch in their work
+        <div class="indicator-sub">Made their own choice — colour, word, movement — rather than copying exactly</div>
+      </div>
+      <div class="score-dots" data-sphere="cognitive" data-idx="4">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="notes-row">
+      <div class="field-label" style="margin-bottom:5px;">Observation notes (cognitive)</div>
+      <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
+    </div>
+  </div>
+
+  <div class="sphere" id="sphere-emotional">
+    <div class="sphere-header sh-emotional">
+      <span class="sphere-title">Emotional sphere</span>
+      <span class="sphere-score" id="score-emotional">0 / 15</span>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Appeared visibly happy, relaxed, or at ease during the session
+        <div class="indicator-sub">Facial expression, body language, or tone reflected comfort</div>
+      </div>
+      <div class="score-dots" data-sphere="emotional" data-idx="0">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Expressed a positive emotion voluntarily — laughed, complimented, or said they enjoyed something
+        <div class="indicator-sub">Not prompted — came from them naturally</div>
+      </div>
+      <div class="score-dots" data-sphere="emotional" data-idx="1">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Handled a difficult moment (mistake, struggle, confusion) without shutting down
+        <div class="indicator-sub">Stayed in the session and tried again, even if briefly</div>
+      </div>
+      <div class="score-dots" data-sphere="emotional" data-idx="2">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Showed emotional openness — shared how they were feeling
+        <div class="indicator-sub">Mentioned mood, health, family, or life without being probed deeply</div>
+      </div>
+      <div class="score-dots" data-sphere="emotional" data-idx="3">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="indicator-row">
+      <div class="indicator-text">Left the session in a noticeably better or calmer state than they arrived
+        <div class="indicator-sub">Observable shift — not assumed. Based on what you saw.</div>
+      </div>
+      <div class="score-dots" data-sphere="emotional" data-idx="4">
+        <div class="dot" onclick="setScore(this,1)">1</div>
+        <div class="dot" onclick="setScore(this,2)">2</div>
+        <div class="dot" onclick="setScore(this,3)">3</div>
+      </div>
+    </div>
+    <div class="notes-row">
+      <div class="field-label" style="margin-bottom:5px;">Observation notes (emotional)</div>
+      <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Monthly challenge bonus — mark if completed this cycle</div>
+
+  <div class="challenge-block ch-physical">
+    <div class="challenge-header">Physical — UnlockFitness Challenge <span class="bonus-badge">+5 UL pts</span></div>
+    <div class="challenge-body">
+      <div class="challenge-name">7-day movement streak</div>
+      <div class="challenge-desc">Senior completes at least one physical activity (session, walk, or home exercise) every day for 7 consecutive days and self-reports or is verified by a family member.</div>
+      <div class="challenge-toggle">
+        <div class="toggle-track" id="ch-physical-toggle" onclick="toggleChallenge('physical')"><div class="toggle-thumb"></div></div>
+        <span id="ch-physical-label">Not completed</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="challenge-block ch-social">
+    <div class="challenge-header">Social — UnlockConnect Challenge <span class="bonus-badge">+5 UL pts</span></div>
+    <div class="challenge-body">
+      <div class="challenge-name">Reach out to 3 people</div>
+      <div class="challenge-desc">Senior initiates a meaningful conversation with at least 3 different people — inside or outside UnlockLife — and shares one thing they learned or enjoyed from UnlockLife with them.</div>
+      <div class="challenge-toggle">
+        <div class="toggle-track" id="ch-social-toggle" onclick="toggleChallenge('social')"><div class="toggle-thumb"></div></div>
+        <span id="ch-social-label">Not completed</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="challenge-block ch-cognitive">
+    <div class="challenge-header">Cognitive — UnlockMind Challenge <span class="bonus-badge">+5 UL pts</span></div>
+    <div class="challenge-body">
+      <div class="challenge-name">Memory &amp; curiosity quiz</div>
+      <div class="challenge-desc">Senior participates in a special live quiz — questions drawn from session trivia, general knowledge, and memory recall. Scored on participation and attempt, not just correct answers. Minimum 5 questions attempted.</div>
+      <div class="challenge-toggle">
+        <div class="toggle-track" id="ch-cognitive-toggle" onclick="toggleChallenge('cognitive')"><div class="toggle-thumb"></div></div>
+        <span id="ch-cognitive-label">Not completed</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="challenge-block ch-emotional">
+    <div class="challenge-header">Emotional — UnlockCreate Challenge <span class="bonus-badge">+5 UL pts</span></div>
+    <div class="challenge-body">
+      <div class="challenge-name">Create something for someone</div>
+      <div class="challenge-desc">Senior creates any art, craft, letter, or handmade item and gives it to a person they care about — family, friend, or fellow member. They share a photo or story of the moment with the UnlockLife team.</div>
+      <div class="challenge-toggle">
+        <div class="toggle-track" id="ch-emotional-toggle" onclick="toggleChallenge('emotional')"><div class="toggle-thumb"></div></div>
+        <span id="ch-emotional-label">Not completed</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">UL score summary</div>
+  <div class="totals-grid">
+    <div class="total-card">
+      <div class="total-label">Weekly observation score</div>
+      <div class="total-value" id="total-weekly">0 <span style="font-size:14px;font-weight:400;color:var(--color-text-secondary);">/ 60</span></div>
+      <div class="total-sub">Across all 4 spheres</div>
+    </div>
+    <div class="total-card">
+      <div class="total-label">Challenge bonus</div>
+      <div class="total-value" id="total-bonus">0 <span style="font-size:14px;font-weight:400;color:var(--color-text-secondary);">/ 20</span></div>
+      <div class="total-sub">Up to 4 challenges × 5 pts</div>
+    </div>
+    <div class="total-card">
+      <div class="total-label">Total UL score this entry</div>
+      <div class="total-value" id="total-combined">0 <span style="font-size:14px;font-weight:400;color:var(--color-text-secondary);">/ 80</span></div>
+      <div class="total-sub">Weekly + challenge bonus</div>
+    </div>
+    <div class="total-card">
+      <div class="total-label">Current stage</div>
+      <div class="total-value" style="font-size:16px;" id="total-stage">—</div>
+      <div id="stage-badge-wrap"></div>
+    </div>
+  </div>
+
+  <div class="submit-row">
+    <button class="btn-primary" onclick="saveForm()">Save observation</button>
+    <button class="btn-reset" onclick="resetForm()">Reset</button>
+    <span class="saved-msg" id="saved-msg">Observation saved for this senior.</span>
+  </div>
+
+</div>
+
+<script>
+  const spheres = ['physical','social','cognitive','emotional'];
+  const scores = { physical:[0,0,0,0,0], social:[0,0,0,0,0], cognitive:[0,0,0,0,0], emotional:[0,0,0,0,0] };
+  const challenges = { physical:false, social:false, cognitive:false, emotional:false };
+  let currentStage = '';
+
+  function setScore(dot, val) {
+    const container = dot.parentElement;
+    const sphere = container.dataset.sphere;
+    const idx = parseInt(container.dataset.idx);
+    const dots = container.querySelectorAll('.dot');
+    dots.forEach((d, i) => {
+      d.classList.remove('sel-1','sel-2','sel-3');
+      if (i < val) d.classList.add('sel-' + val);
+    });
+    scores[sphere][idx] = val;
+    updateTotals();
+  }
+
+  function setStage(s) {
+    currentStage = s;
+    ['ignite','deepen','strengthen'].forEach(st => {
+      const btn = document.getElementById('stage-' + st);
+      btn.className = 'stage-btn';
+      if (st === s) btn.classList.add('active-' + st);
+    });
+    updateTotals();
+  }
+
+  function toggleChallenge(type) {
+    challenges[type] = !challenges[type];
+    const track = document.getElementById('ch-' + type + '-toggle');
+    const label = document.getElementById('ch-' + type + '-label');
+    track.classList.toggle('on', challenges[type]);
+    label.textContent = challenges[type] ? 'Completed — +5 UL points awarded' : 'Not completed';
+    label.style.color = challenges[type] ? 'var(--color-text-success)' : 'var(--color-text-secondary)';
+    updateTotals();
+  }
+
+  function updateTotals() {
+    let weekly = 0;
+    spheres.forEach(s => {
+      const total = scores[s].reduce((a, b) => a + b, 0);
+      weekly += total;
+      document.getElementById('score-' + s).textContent = total + ' / 15';
+    });
+    const bonus = Object.values(challenges).filter(Boolean).length * 5;
+    document.getElementById('total-weekly').innerHTML    = weekly + ' <span style="font-size:14px;font-weight:400;color:var(--color-text-secondary);">/ 60</span>';
+    document.getElementById('total-bonus').innerHTML     = bonus  + ' <span style="font-size:14px;font-weight:400;color:var(--color-text-secondary);">/ 20</span>';
+    document.getElementById('total-combined').innerHTML  = (weekly + bonus) + ' <span style="font-size:14px;font-weight:400;color:var(--color-text-secondary);">/ 80</span>';
+    const stageEl   = document.getElementById('total-stage');
+    const badgeWrap = document.getElementById('stage-badge-wrap');
+    if (currentStage) {
+      const labels = { ignite:'Ignite', deepen:'Deepen', strengthen:'Strengthen' };
+      stageEl.textContent = labels[currentStage];
+      badgeWrap.innerHTML = '<div class="stage-badge badge-' + currentStage + '">' + labels[currentStage] + '</div>';
+    } else {
+      stageEl.textContent = '—';
+      badgeWrap.innerHTML = '';
+    }
+  }
+
+  function saveForm() {
+    document.getElementById('saved-msg').style.display = 'inline';
+  }
+
+  function resetForm() {
+    spheres.forEach(s => {
+      scores[s] = [0,0,0,0,0];
+      document.querySelectorAll(`.score-dots[data-sphere="${s}"] .dot`).forEach(d => d.classList.remove('sel-1','sel-2','sel-3'));
+    });
+    Object.keys(challenges).forEach(c => {
+      challenges[c] = false;
+      document.getElementById('ch-' + c + '-toggle').classList.remove('on');
+      const label = document.getElementById('ch-' + c + '-label');
+      label.textContent = 'Not completed';
+      label.style.color = '';
+    });
+    currentStage = '';
+    ['ignite','deepen','strengthen'].forEach(s => document.getElementById('stage-' + s).className = 'stage-btn');
+    document.querySelectorAll('textarea').forEach(t => t.value = '');
+    document.querySelectorAll('input[type=text], input[type=date]').forEach(i => i.value = '');
+    document.getElementById('saved-msg').style.display = 'none';
+    updateTotals();
+  }
+
+  updateTotals();
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('obs-date').value = today;
+</script>
+</body>
+</html>
