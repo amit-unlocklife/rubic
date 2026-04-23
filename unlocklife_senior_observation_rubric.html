@@ -80,6 +80,32 @@
       margin-top: 1px;
     }
 
+    /* ── Tab navigation ─────────────────────────────────────────── */
+    .tab-nav {
+      background: var(--color-background-primary);
+      border-bottom: 0.5px solid var(--color-border-tertiary);
+      display: flex;
+      padding: 0 20px;
+    }
+    .tab-btn {
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -0.5px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn:hover { color: var(--color-text-primary); }
+    .tab-btn.active {
+      color: #1D9E75;
+      border-bottom-color: #1D9E75;
+    }
+
     .wrap {
       max-width: 680px;
       margin: 0 auto;
@@ -122,6 +148,10 @@
       font-weight: 500;
       color: var(--color-text-secondary);
     }
+    .field-label .required-star {
+      color: #E24B4A;
+      margin-left: 2px;
+    }
     .field-group input,
     .field-group select {
       font-size: 14px;
@@ -139,6 +169,10 @@
     .field-group select:focus {
       border-color: #1D9E75;
       box-shadow: 0 0 0 3px rgba(29,158,117,0.12);
+    }
+    .field-group input.field-error {
+      border-color: #E24B4A;
+      box-shadow: 0 0 0 3px rgba(226,75,74,0.12);
     }
 
     /* ── Stage buttons ──────────────────────────────────────────── */
@@ -357,10 +391,8 @@
     }
     .challenge-header {
       padding: 11px 16px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -456,6 +488,16 @@
       display: none;
       font-weight: 500;
     }
+    .error-msg {
+      font-size: 13px;
+      color: #E24B4A;
+      display: none;
+      font-weight: 500;
+    }
+    .btn-primary:disabled {
+      background: #9CA3AF;
+      cursor: not-allowed;
+    }
 
     /* ── Divider ────────────────────────────────────────────────── */
     .divider {
@@ -471,29 +513,35 @@
   <div class="page-logo">UL</div>
   <div>
     <div class="page-title">Senior Observation Rubric</div>
-    <div class="page-subtitle">UnlockLife · Weekly coaching assessment</div>
+    <div class="page-subtitle">UnlockLife · Coaching assessment</div>
   </div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" id="tab-weekly" onclick="switchTab('weekly')">Weekly</button>
+  <button class="tab-btn" id="tab-monthly" onclick="switchTab('monthly')">Monthly</button>
 </div>
 
 <div class="wrap">
 
+  <!-- Senior details — shown on both tabs -->
   <div class="section-label">Senior details</div>
   <div class="card">
     <div class="header-row">
       <div class="field-group">
-        <span class="field-label">Senior name</span>
+        <span class="field-label">Senior name <span class="required-star">*</span></span>
         <input type="text" id="senior-name" placeholder="e.g. Suresh Mehta">
       </div>
       <div class="field-group">
-        <span class="field-label">Date of observation</span>
+        <span class="field-label">Date of observation <span class="required-star">*</span></span>
         <input type="date" id="obs-date">
       </div>
       <div class="field-group">
-        <span class="field-label">Observed by</span>
+        <span class="field-label">Observed by <span class="required-star">*</span></span>
         <input type="text" id="observer" placeholder="Coach name">
       </div>
       <div class="field-group">
-        <span class="field-label">Week number</span>
+        <span class="field-label">Week number <span class="required-star">*</span></span>
         <input type="text" id="week-no" placeholder="e.g. Week 4, April">
       </div>
     </div>
@@ -514,312 +562,319 @@
       </button>
     </div>
 
-    <div class="section-label" style="margin-bottom:8px;">Scoring guide</div>
-    <div class="score-legend">
-      <div class="legend-item"><div class="legend-dot ld1"></div> 1 — Rarely observed</div>
-      <div class="legend-item"><div class="legend-dot ld2"></div> 2 — Sometimes observed</div>
-      <div class="legend-item"><div class="legend-dot ld3"></div> 3 — Consistently observed</div>
-    </div>
-  </div>
-
-  <div class="section-label">Health spheres — weekly observation</div>
-
-  <div class="sphere" id="sphere-physical">
-    <div class="sphere-header sh-physical">
-      <span class="sphere-title">Physical sphere</span>
-      <span class="sphere-score" id="score-physical">0 / 15</span>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Participated actively in movement or fitness session
-        <div class="indicator-sub">Did not just watch — made an attempt at exercises</div>
-      </div>
-      <div class="score-dots" data-sphere="physical" data-idx="0">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Completed warm-up and cool-down without being prompted
-        <div class="indicator-sub">Followed along without needing repeated reminders</div>
-      </div>
-      <div class="score-dots" data-sphere="physical" data-idx="1">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Showed visible effort or improvement in a movement
-        <div class="indicator-sub">Tried harder, went deeper, or held longer than before</div>
-      </div>
-      <div class="score-dots" data-sphere="physical" data-idx="2">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Reported or showed reduced physical complaint compared to last week
-        <div class="indicator-sub">Pain, stiffness, or fatigue mentioned less or not at all</div>
-      </div>
-      <div class="score-dots" data-sphere="physical" data-idx="3">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Maintained regularity — attended without being chased
-        <div class="indicator-sub">Showed up on their own initiative</div>
-      </div>
-      <div class="score-dots" data-sphere="physical" data-idx="4">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="notes-row">
-      <div class="field-label" style="margin-bottom:5px;">Observation notes (physical)</div>
-      <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
-    </div>
-  </div>
-
-  <div class="sphere" id="sphere-social">
-    <div class="sphere-header sh-social">
-      <span class="sphere-title">Social sphere</span>
-      <span class="sphere-score" id="score-social">0 / 15</span>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Initiated a conversation or greeted another member
-        <div class="indicator-sub">Didn't wait to be spoken to — started something themselves</div>
-      </div>
-      <div class="score-dots" data-sphere="social" data-idx="0">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Responded when spoken to — did not stay withdrawn
-        <div class="indicator-sub">Eye contact, reply, or acknowledgement given</div>
-      </div>
-      <div class="score-dots" data-sphere="social" data-idx="1">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Shared something personal — a story, memory, or opinion
-        <div class="indicator-sub">Opened up voluntarily, not just answering yes/no</div>
-      </div>
-      <div class="score-dots" data-sphere="social" data-idx="2">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Showed interest in another member's wellbeing
-        <div class="indicator-sub">Asked how someone was, noticed their absence, or offered encouragement</div>
-      </div>
-      <div class="score-dots" data-sphere="social" data-idx="3">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Participated in group activity without needing separate coaxing
-        <div class="indicator-sub">Joined in willingly, not after repeated individual invitations</div>
-      </div>
-      <div class="score-dots" data-sphere="social" data-idx="4">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="notes-row">
-      <div class="field-label" style="margin-bottom:5px;">Observation notes (social)</div>
-      <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
-    </div>
-  </div>
-
-  <div class="sphere" id="sphere-cognitive">
-    <div class="sphere-header sh-cognitive">
-      <span class="sphere-title">Cognitive sphere</span>
-      <span class="sphere-score" id="score-cognitive">0 / 15</span>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Recalled something from a previous session unprompted
-        <div class="indicator-sub">Remembered a song, step, craft detail, or discussion without being reminded</div>
-      </div>
-      <div class="score-dots" data-sphere="cognitive" data-idx="0">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Followed multi-step instructions without getting lost
-        <div class="indicator-sub">Kept up with sequenced directions in fitness, music, or craft</div>
-      </div>
-      <div class="score-dots" data-sphere="cognitive" data-idx="1">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Asked a curious or thoughtful question during the session
-        <div class="indicator-sub">Mind was engaged, not just present</div>
-      </div>
-      <div class="score-dots" data-sphere="cognitive" data-idx="2">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Responded correctly or thoughtfully to trivia or a quiz question
-        <div class="indicator-sub">Attempted an answer — right or wrong, the attempt counts</div>
-      </div>
-      <div class="score-dots" data-sphere="cognitive" data-idx="3">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Showed creative thinking or a personalised touch in their work
-        <div class="indicator-sub">Made their own choice — colour, word, movement — rather than copying exactly</div>
-      </div>
-      <div class="score-dots" data-sphere="cognitive" data-idx="4">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="notes-row">
-      <div class="field-label" style="margin-bottom:5px;">Observation notes (cognitive)</div>
-      <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
-    </div>
-  </div>
-
-  <div class="sphere" id="sphere-emotional">
-    <div class="sphere-header sh-emotional">
-      <span class="sphere-title">Emotional sphere</span>
-      <span class="sphere-score" id="score-emotional">0 / 15</span>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Appeared visibly happy, relaxed, or at ease during the session
-        <div class="indicator-sub">Facial expression, body language, or tone reflected comfort</div>
-      </div>
-      <div class="score-dots" data-sphere="emotional" data-idx="0">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Expressed a positive emotion voluntarily — laughed, complimented, or said they enjoyed something
-        <div class="indicator-sub">Not prompted — came from them naturally</div>
-      </div>
-      <div class="score-dots" data-sphere="emotional" data-idx="1">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Handled a difficult moment (mistake, struggle, confusion) without shutting down
-        <div class="indicator-sub">Stayed in the session and tried again, even if briefly</div>
-      </div>
-      <div class="score-dots" data-sphere="emotional" data-idx="2">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Showed emotional openness — shared how they were feeling
-        <div class="indicator-sub">Mentioned mood, health, family, or life without being probed deeply</div>
-      </div>
-      <div class="score-dots" data-sphere="emotional" data-idx="3">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="indicator-row">
-      <div class="indicator-text">Left the session in a noticeably better or calmer state than they arrived
-        <div class="indicator-sub">Observable shift — not assumed. Based on what you saw.</div>
-      </div>
-      <div class="score-dots" data-sphere="emotional" data-idx="4">
-        <div class="dot" onclick="setScore(this,1)">1</div>
-        <div class="dot" onclick="setScore(this,2)">2</div>
-        <div class="dot" onclick="setScore(this,3)">3</div>
-      </div>
-    </div>
-    <div class="notes-row">
-      <div class="field-label" style="margin-bottom:5px;">Observation notes (emotional)</div>
-      <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <div class="section-label">Monthly challenge bonus — mark if completed this cycle</div>
-
-  <div class="challenge-block ch-physical">
-    <div class="challenge-header">Physical — UnlockFitness Challenge <span class="bonus-badge">+5 UL pts</span></div>
-    <div class="challenge-body">
-      <div class="challenge-name">7-day movement streak</div>
-      <div class="challenge-desc">Senior completes at least one physical activity (session, walk, or home exercise) every day for 7 consecutive days and self-reports or is verified by a family member.</div>
-      <div class="challenge-toggle">
-        <div class="toggle-track" id="ch-physical-toggle" onclick="toggleChallenge('physical')"><div class="toggle-thumb"></div></div>
-        <span id="ch-physical-label">Not completed</span>
+    <div id="scoring-guide-weekly">
+      <div class="section-label" style="margin-bottom:8px;">Scoring guide</div>
+      <div class="score-legend">
+        <div class="legend-item"><div class="legend-dot ld1"></div> 1 — Rarely observed</div>
+        <div class="legend-item"><div class="legend-dot ld2"></div> 2 — Sometimes observed</div>
+        <div class="legend-item"><div class="legend-dot ld3"></div> 3 — Consistently observed</div>
       </div>
     </div>
   </div>
 
-  <div class="challenge-block ch-social">
-    <div class="challenge-header">Social — UnlockConnect Challenge <span class="bonus-badge">+5 UL pts</span></div>
-    <div class="challenge-body">
-      <div class="challenge-name">Reach out to 3 people</div>
-      <div class="challenge-desc">Senior initiates a meaningful conversation with at least 3 different people — inside or outside UnlockLife — and shares one thing they learned or enjoyed from UnlockLife with them.</div>
-      <div class="challenge-toggle">
-        <div class="toggle-track" id="ch-social-toggle" onclick="toggleChallenge('social')"><div class="toggle-thumb"></div></div>
-        <span id="ch-social-label">Not completed</span>
+  <!-- ── Weekly tab content ────────────────────────────────────── -->
+  <div id="view-weekly">
+    <div class="section-label">Health spheres — weekly observation</div>
+
+    <div class="sphere" id="sphere-physical">
+      <div class="sphere-header sh-physical">
+        <span class="sphere-title">Physical sphere</span>
+        <span class="sphere-score" id="score-physical">0 / 15</span>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Participated actively in movement or fitness session
+          <div class="indicator-sub">Did not just watch — made an attempt at exercises</div>
+        </div>
+        <div class="score-dots" data-sphere="physical" data-idx="0">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Completed warm-up and cool-down without being prompted
+          <div class="indicator-sub">Followed along without needing repeated reminders</div>
+        </div>
+        <div class="score-dots" data-sphere="physical" data-idx="1">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Showed visible effort or improvement in a movement
+          <div class="indicator-sub">Tried harder, went deeper, or held longer than before</div>
+        </div>
+        <div class="score-dots" data-sphere="physical" data-idx="2">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Reported or showed reduced physical complaint compared to last week
+          <div class="indicator-sub">Pain, stiffness, or fatigue mentioned less or not at all</div>
+        </div>
+        <div class="score-dots" data-sphere="physical" data-idx="3">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Maintained regularity — attended without being chased
+          <div class="indicator-sub">Showed up on their own initiative</div>
+        </div>
+        <div class="score-dots" data-sphere="physical" data-idx="4">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="notes-row">
+        <div class="field-label" style="margin-bottom:5px;">Observation notes (physical)</div>
+        <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
+      </div>
+    </div>
+
+    <div class="sphere" id="sphere-social">
+      <div class="sphere-header sh-social">
+        <span class="sphere-title">Social sphere</span>
+        <span class="sphere-score" id="score-social">0 / 15</span>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Initiated a conversation or greeted another member
+          <div class="indicator-sub">Didn't wait to be spoken to — started something themselves</div>
+        </div>
+        <div class="score-dots" data-sphere="social" data-idx="0">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Responded when spoken to — did not stay withdrawn
+          <div class="indicator-sub">Eye contact, reply, or acknowledgement given</div>
+        </div>
+        <div class="score-dots" data-sphere="social" data-idx="1">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Shared something personal — a story, memory, or opinion
+          <div class="indicator-sub">Opened up voluntarily, not just answering yes/no</div>
+        </div>
+        <div class="score-dots" data-sphere="social" data-idx="2">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Showed interest in another member's wellbeing
+          <div class="indicator-sub">Asked how someone was, noticed their absence, or offered encouragement</div>
+        </div>
+        <div class="score-dots" data-sphere="social" data-idx="3">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Participated in group activity without needing separate coaxing
+          <div class="indicator-sub">Joined in willingly, not after repeated individual invitations</div>
+        </div>
+        <div class="score-dots" data-sphere="social" data-idx="4">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="notes-row">
+        <div class="field-label" style="margin-bottom:5px;">Observation notes (social)</div>
+        <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
+      </div>
+    </div>
+
+    <div class="sphere" id="sphere-cognitive">
+      <div class="sphere-header sh-cognitive">
+        <span class="sphere-title">Cognitive sphere</span>
+        <span class="sphere-score" id="score-cognitive">0 / 15</span>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Recalled something from a previous session unprompted
+          <div class="indicator-sub">Remembered a song, step, craft detail, or discussion without being reminded</div>
+        </div>
+        <div class="score-dots" data-sphere="cognitive" data-idx="0">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Followed multi-step instructions without getting lost
+          <div class="indicator-sub">Kept up with sequenced directions in fitness, music, or craft</div>
+        </div>
+        <div class="score-dots" data-sphere="cognitive" data-idx="1">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Asked a curious or thoughtful question during the session
+          <div class="indicator-sub">Mind was engaged, not just present</div>
+        </div>
+        <div class="score-dots" data-sphere="cognitive" data-idx="2">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Responded correctly or thoughtfully to trivia or a quiz question
+          <div class="indicator-sub">Attempted an answer — right or wrong, the attempt counts</div>
+        </div>
+        <div class="score-dots" data-sphere="cognitive" data-idx="3">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Showed creative thinking or a personalised touch in their work
+          <div class="indicator-sub">Made their own choice — colour, word, movement — rather than copying exactly</div>
+        </div>
+        <div class="score-dots" data-sphere="cognitive" data-idx="4">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="notes-row">
+        <div class="field-label" style="margin-bottom:5px;">Observation notes (cognitive)</div>
+        <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
+      </div>
+    </div>
+
+    <div class="sphere" id="sphere-emotional">
+      <div class="sphere-header sh-emotional">
+        <span class="sphere-title">Emotional sphere</span>
+        <span class="sphere-score" id="score-emotional">0 / 15</span>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Appeared visibly happy, relaxed, or at ease during the session
+          <div class="indicator-sub">Facial expression, body language, or tone reflected comfort</div>
+        </div>
+        <div class="score-dots" data-sphere="emotional" data-idx="0">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Expressed a positive emotion voluntarily — laughed, complimented, or said they enjoyed something
+          <div class="indicator-sub">Not prompted — came from them naturally</div>
+        </div>
+        <div class="score-dots" data-sphere="emotional" data-idx="1">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Handled a difficult moment (mistake, struggle, confusion) without shutting down
+          <div class="indicator-sub">Stayed in the session and tried again, even if briefly</div>
+        </div>
+        <div class="score-dots" data-sphere="emotional" data-idx="2">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Showed emotional openness — shared how they were feeling
+          <div class="indicator-sub">Mentioned mood, health, family, or life without being probed deeply</div>
+        </div>
+        <div class="score-dots" data-sphere="emotional" data-idx="3">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="indicator-row">
+        <div class="indicator-text">Left the session in a noticeably better or calmer state than they arrived
+          <div class="indicator-sub">Observable shift — not assumed. Based on what you saw.</div>
+        </div>
+        <div class="score-dots" data-sphere="emotional" data-idx="4">
+          <div class="dot" onclick="setScore(this,1)">1</div>
+          <div class="dot" onclick="setScore(this,2)">2</div>
+          <div class="dot" onclick="setScore(this,3)">3</div>
+        </div>
+      </div>
+      <div class="notes-row">
+        <div class="field-label" style="margin-bottom:5px;">Observation notes (emotional)</div>
+        <textarea rows="2" placeholder="What specific behaviour did you notice this week?"></textarea>
       </div>
     </div>
   </div>
 
-  <div class="challenge-block ch-cognitive">
-    <div class="challenge-header">Cognitive — UnlockMind Challenge <span class="bonus-badge">+5 UL pts</span></div>
-    <div class="challenge-body">
-      <div class="challenge-name">Memory &amp; curiosity quiz</div>
-      <div class="challenge-desc">Senior participates in a special live quiz — questions drawn from session trivia, general knowledge, and memory recall. Scored on participation and attempt, not just correct answers. Minimum 5 questions attempted.</div>
-      <div class="challenge-toggle">
-        <div class="toggle-track" id="ch-cognitive-toggle" onclick="toggleChallenge('cognitive')"><div class="toggle-thumb"></div></div>
-        <span id="ch-cognitive-label">Not completed</span>
+  <!-- ── Monthly tab content ───────────────────────────────────── -->
+  <div id="view-monthly" style="display:none;">
+    <div class="section-label">Monthly challenge bonus — mark if completed this cycle</div>
+
+    <div class="challenge-block ch-physical">
+      <div class="challenge-header">Physical – UnlockFitness Challenge <span class="bonus-badge">+5 UL pts</span></div>
+      <div class="challenge-body">
+        <div class="challenge-name">Complete the Challenge</div>
+        <div class="challenge-desc">Senior completes the full UnlockFitness challenge cycle (not just a single activity). Consistency and completion of the planned routine are required.</div>
+        <div class="challenge-toggle">
+          <div class="toggle-track" id="ch-physical-toggle" onclick="toggleChallenge('physical')"><div class="toggle-thumb"></div></div>
+          <span id="ch-physical-label">Not completed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge-block ch-social">
+      <div class="challenge-header">Social – UnlockConnect Challenge <span class="bonus-badge">+5 UL pts</span></div>
+      <div class="challenge-body">
+        <div class="challenge-name">Group Connection Time</div>
+        <div class="challenge-desc">Seniors come together as a group to sit, talk, and engage in meaningful conversations, building connection and bonding within the community.</div>
+        <div class="challenge-toggle">
+          <div class="toggle-track" id="ch-social-toggle" onclick="toggleChallenge('social')"><div class="toggle-thumb"></div></div>
+          <span id="ch-social-label">Not completed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge-block ch-cognitive">
+      <div class="challenge-header">Cognitive – UnlockMind Challenge <span class="bonus-badge">+5 UL pts</span></div>
+      <div class="challenge-body">
+        <div class="challenge-name">Quiz or NeuroCraft Challenge</div>
+        <div class="challenge-desc">Senior participates and achieves a top position (1st, 2nd, or 3rd) in the quiz. Alternatively, they take part in a NeuroCraft challenge where they create, think, and engage creatively.</div>
+        <div class="challenge-toggle">
+          <div class="toggle-track" id="ch-cognitive-toggle" onclick="toggleChallenge('cognitive')"><div class="toggle-thumb"></div></div>
+          <span id="ch-cognitive-label">Not completed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge-block ch-emotional">
+      <div class="challenge-header">Emotional – UnlockCreate Challenge <span class="bonus-badge">+5 UL pts</span></div>
+      <div class="challenge-body">
+        <div class="challenge-name">Nostalgia Sharing Circle</div>
+        <div class="challenge-desc">Senior shares a personal nostalgic story or meaningful memory with the group, creating a moment of emotional connection and reflection.</div>
+        <div class="challenge-toggle">
+          <div class="toggle-track" id="ch-emotional-toggle" onclick="toggleChallenge('emotional')"><div class="toggle-thumb"></div></div>
+          <span id="ch-emotional-label">Not completed</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="challenge-block ch-emotional">
-    <div class="challenge-header">Emotional — UnlockCreate Challenge <span class="bonus-badge">+5 UL pts</span></div>
-    <div class="challenge-body">
-      <div class="challenge-name">Create something for someone</div>
-      <div class="challenge-desc">Senior creates any art, craft, letter, or handmade item and gives it to a person they care about — family, friend, or fellow member. They share a photo or story of the moment with the UnlockLife team.</div>
-      <div class="challenge-toggle">
-        <div class="toggle-track" id="ch-emotional-toggle" onclick="toggleChallenge('emotional')"><div class="toggle-thumb"></div></div>
-        <span id="ch-emotional-label">Not completed</span>
-      </div>
-    </div>
-  </div>
-
+  <!-- ── Score summary — always shown ─────────────────────────── -->
   <hr class="divider">
 
   <div class="section-label">UL score summary</div>
@@ -847,18 +902,38 @@
   </div>
 
   <div class="submit-row">
-    <button class="btn-primary" onclick="saveForm()">Save observation</button>
+    <button class="btn-primary" id="save-btn" onclick="saveForm()">Save observation</button>
     <button class="btn-reset" onclick="resetForm()">Reset</button>
-    <span class="saved-msg" id="saved-msg">Observation saved for this senior.</span>
+    <span class="saved-msg" id="saved-msg"></span>
+    <span class="error-msg" id="error-msg"></span>
   </div>
 
 </div>
 
 <script>
+  // ── CONFIGURATION ──────────────────────────────────────────────────────
+  // Paste your deployed Google Apps Script Web App URL here:
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzFjpLgaV4fLgOPSwqAa1tC3Xinh0T2xRXMMQZephX8QGvGlqt1DuM9g1PWh-hsfyv/exec';
+  // ──────────────────────────────────────────────────────────────────────
+
   const spheres = ['physical','social','cognitive','emotional'];
   const scores = { physical:[0,0,0,0,0], social:[0,0,0,0,0], cognitive:[0,0,0,0,0], emotional:[0,0,0,0,0] };
   const challenges = { physical:false, social:false, cognitive:false, emotional:false };
   let currentStage = '';
+  let activeTab = 'weekly';
+
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('view-weekly').style.display  = tab === 'weekly'  ? '' : 'none';
+    document.getElementById('view-monthly').style.display = tab === 'monthly' ? '' : 'none';
+    document.getElementById('scoring-guide-weekly').style.display = tab === 'weekly' ? '' : 'none';
+    document.getElementById('tab-weekly').classList.toggle('active',  tab === 'weekly');
+    document.getElementById('tab-monthly').classList.toggle('active', tab === 'monthly');
+    // Update save button label
+    document.getElementById('save-btn').textContent =
+      tab === 'weekly' ? 'Save weekly observation' : 'Save monthly challenges';
+    clearMessages();
+  }
 
   function setScore(dot, val) {
     const container = dot.parentElement;
@@ -916,10 +991,119 @@
     }
   }
 
-  function saveForm() {
-    document.getElementById('saved-msg').style.display = 'inline';
+  // ── Validation ─────────────────────────────────────────────────────────
+  const requiredFields = ['senior-name', 'obs-date', 'observer', 'week-no'];
+
+  function validateRequired() {
+    let valid = true;
+    requiredFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.classList.add('field-error');
+        valid = false;
+      } else {
+        el.classList.remove('field-error');
+      }
+    });
+    return valid;
   }
 
+  requiredFields.forEach(id => {
+    document.getElementById(id).addEventListener('input', function () {
+      if (this.value.trim()) this.classList.remove('field-error');
+    });
+  });
+
+  // ── Collect form data ──────────────────────────────────────────────────
+  function getCommonFields() {
+    return {
+      seniorName: document.getElementById('senior-name').value.trim(),
+      obsDate:    document.getElementById('obs-date').value,
+      observer:   document.getElementById('observer').value.trim(),
+      weekNo:     document.getElementById('week-no').value.trim(),
+      stage:      currentStage
+    };
+  }
+
+  function getNotes() {
+    const textareas = document.querySelectorAll('.notes-row textarea');
+    // order matches sphere order: physical, social, cognitive, emotional
+    return {
+      physical:  textareas[0] ? textareas[0].value.trim() : '',
+      social:    textareas[1] ? textareas[1].value.trim() : '',
+      cognitive: textareas[2] ? textareas[2].value.trim() : '',
+      emotional: textareas[3] ? textareas[3].value.trim() : ''
+    };
+  }
+
+  function buildWeeklyPayload() {
+    const weeklyTotal = spheres.reduce((sum, s) => sum + scores[s].reduce((a,b) => a+b, 0), 0);
+    return Object.assign({ type: 'weekly', scores, notes: getNotes(), weeklyTotal }, getCommonFields());
+  }
+
+  function buildMonthlyPayload() {
+    const bonusTotal = Object.values(challenges).filter(Boolean).length * 5;
+    return Object.assign({ type: 'monthly', challenges, bonusTotal }, getCommonFields());
+  }
+
+  // ── Save ───────────────────────────────────────────────────────────────
+  async function saveForm() {
+    if (!validateRequired()) {
+      showError('Please fill in all required Senior details (marked *).');
+      return;
+    }
+
+    if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+      showError('Script URL not configured. Open the HTML file and set SCRIPT_URL.');
+      return;
+    }
+
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    clearMessages();
+
+    const payload = activeTab === 'weekly' ? buildWeeklyPayload() : buildMonthlyPayload();
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      if (json.success) {
+        showSaved(activeTab === 'weekly'
+          ? 'Weekly observation saved to Google Sheet.'
+          : 'Monthly challenges saved to Google Sheet.');
+      } else {
+        showError('Error: ' + json.message);
+      }
+    } catch (err) {
+      showError('Could not reach the script. Check your SCRIPT_URL and try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = activeTab === 'weekly' ? 'Save weekly observation' : 'Save monthly challenges';
+    }
+  }
+
+  function showSaved(msg) {
+    document.getElementById('saved-msg').textContent = msg;
+    document.getElementById('saved-msg').style.display = 'inline';
+    document.getElementById('error-msg').style.display = 'none';
+  }
+
+  function showError(msg) {
+    document.getElementById('error-msg').textContent = msg;
+    document.getElementById('error-msg').style.display = 'inline';
+    document.getElementById('saved-msg').style.display = 'none';
+  }
+
+  function clearMessages() {
+    document.getElementById('saved-msg').style.display = 'none';
+    document.getElementById('error-msg').style.display = 'none';
+  }
+
+  // ── Reset ──────────────────────────────────────────────────────────────
   function resetForm() {
     spheres.forEach(s => {
       scores[s] = [0,0,0,0,0];
@@ -936,14 +1120,14 @@
     ['ignite','deepen','strengthen'].forEach(s => document.getElementById('stage-' + s).className = 'stage-btn');
     document.querySelectorAll('textarea').forEach(t => t.value = '');
     document.querySelectorAll('input[type=text], input[type=date]').forEach(i => i.value = '');
-    document.getElementById('saved-msg').style.display = 'none';
+    requiredFields.forEach(id => document.getElementById(id).classList.remove('field-error'));
+    clearMessages();
     updateTotals();
+    document.getElementById('obs-date').value = new Date().toISOString().split('T')[0];
   }
 
   updateTotals();
-
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('obs-date').value = today;
+  document.getElementById('obs-date').value = new Date().toISOString().split('T')[0];
 </script>
 </body>
 </html>
