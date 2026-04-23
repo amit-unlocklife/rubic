@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "builds": [
+    {
+      "src": "unlocklife_senior_observation_rubric.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/unlocklife_senior_observation_rubric.html"
+    }
+  ]
+}
